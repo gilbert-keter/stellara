@@ -11,37 +11,33 @@ import (
 )
 
 func loadEnv() {
-	if err := godotenv.Load(); err != nil {
-		log.Println("No .env file found, using system environment")
+	env := godotenv.Load()
+	if env != nil {
+		fmt.Printf("Error loading .env file: %v\n", env)
 	}
-}
-
-func GetDBConfig() (dbName, dbUser, dbPassword, dbHost, dbPort string) {
-	loadEnv()
-	dbName = os.Getenv("DB_NAME")
-	dbUser = os.Getenv("DB_USER")
-	dbPassword = os.Getenv("DB_PASSWORD")
-	dbHost = os.Getenv("DB_HOST")
-	dbPort = os.Getenv("DB_PORT")
-	return
 }
 
 func GetDBConnectionString() string {
-	dbName, dbUser, dbPassword, dbHost, dbPort := GetDBConfig()
-	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", dbUser, dbPassword, dbHost, dbPort, dbName)
+	loadEnv()
+	DB_HOST := os.Getenv("DB_HOST")
+	DB_USER := os.Getenv("DB_USER")
+	DB_PASSWORD := os.Getenv("DB_PASSWORD")
+	DB_NAME := os.Getenv("DB_NAME")
+	DB_PORT := os.Getenv("DB_PORT")
+	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME)
 }
 
 func InitDB() *sql.DB {
-	dsn := GetDBConnectionString()
-	db, err := sql.Open("mysql", dsn)
+	connStr := GetDBConnectionString()
+	db, err := sql.Open("mysql", connStr)
 	if err != nil {
-		log.Fatalf("Failed to open DB: %v", err)
+		log.Fatal(err)
 	}
-
-	if err := db.Ping(); err != nil {
-		log.Fatalf("Failed to connect to DB: %v", err)
+	err = db.Ping()
+	if err != nil {
+		log.Fatal(err)
 	}
-
-	fmt.Println("Database connected successfully!")
+	defer db.Close()
+	log.Println("Successfully connected to the database!")
 	return db
 }
