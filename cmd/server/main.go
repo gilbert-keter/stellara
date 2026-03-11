@@ -21,11 +21,18 @@ func main() {
 	if err := db.AutoMigrate(&model.Task{}); err != nil {
 		log.Fatal("Migration failed:", err)
 	}
-
+	if err := db.AutoMigrate(&model.Users{}); err != nil {
+		log.Fatal("Migration failed:", err)
+	}
 	// Initialize repository, service, handler
 	taskRepo := repository.NewTaskRepository(db)
 	taskService := service.NewTaskService(taskRepo)
 	taskHandler := handler.NewTaskHandler(taskService)
+
+
+	userRepo := repository.NewUserRepository(db)
+	userServce := service.NewUserSevice(userRepo)
+	userHandler := handler.NewUserHandler(userServce)
 
 	// Register routes (pass handlers to routes if needed)
 	router := routes.RegisterRoutes(taskHandler)

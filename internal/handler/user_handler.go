@@ -9,6 +9,10 @@ type UserHandler struct {
 	service *service.UserService
 }
 
+func NewUserHandler(service *service.UserService) *UserHandler {
+	return &UserHandler{service: service}
+}
+
 func (h *UserHandler) CreateUser(user *model.Users) (model.Users, error) {
 	return h.service.CreateUser(user)
 }
