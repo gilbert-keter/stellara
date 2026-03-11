@@ -18,6 +18,6 @@ func (s *UserService) CreateUser(user *model.Users) (model.Users, error) {
 	return s.repo.CreateUser(user)
 }
 
-func (s *UserService) GetAllUsers() ([]model.Users, error) {
+func (s *UserService) GetUsers() ([]model.Users, error) {
 	return s.repo.GetUsers()
 }
