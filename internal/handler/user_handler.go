@@ -31,8 +31,9 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
-	var users []model.Users = []model.Users{}
-	if err := json.NewDecoder(r.Body).Decode(&users); err != nil {
+	users, err := h.service.GetUsers()
+
+	if err != nil {
 		log.Fatal(err)
 	}
 	w.Header().Set("content", "application/json")
