@@ -29,13 +29,13 @@ func main() {
 	taskService := service.NewTaskService(taskRepo)
 	taskHandler := handler.NewTaskHandler(taskService)
 
-
 	userRepo := repository.NewUserRepository(db)
 	userServce := service.NewUserSevice(userRepo)
 	userHandler := handler.NewUserHandler(userServce)
 
 	// Register routes (pass handlers to routes if needed)
 	router := routes.RegisterRoutes(taskHandler)
+	router = routes.RegisterUserRoutes(userHandler)
 
 	// Start the server
 	port := ":8080"
