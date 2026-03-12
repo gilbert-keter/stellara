@@ -11,12 +11,13 @@ import (
 	"github.com/gilbert-keter/stellara/internal/repository"
 	"github.com/gilbert-keter/stellara/internal/routes"
 	"github.com/gilbert-keter/stellara/internal/service"
+	"github.com/gorilla/mux"
 )
 
 func main() {
 	// Initialize GORM DB
 	db := configs.InitGormDB()
-
+	r := mux.NewRouter()
 	// Auto-migrate first
 	if err := db.AutoMigrate(&model.Task{}); err != nil {
 		log.Fatal("Migration failed:", err)
@@ -34,8 +35,8 @@ func main() {
 	userHandler := handler.NewUserHandler(userServce)
 
 	// Register routes (pass handlers to routes if needed)
-	router := routes.RegisterRoutes(taskHandler)
-	router = routes.RegisterUserRoutes(userHandler)
+	router := routes.RegisterRoutes(r, taskHandler)
+	router = routes.RegisterUserRoutes(r, userHandler)
 
 	// Start the server
 	port := ":8080"
