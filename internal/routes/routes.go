@@ -16,6 +16,6 @@ func RegisterRoutes(r *mux.Router, taskHandler *handler.TaskHandler) http.Handle
 
 func RegisterUserRoutes(r *mux.Router, userHandler *handler.UserHandler) http.Handler {
 	r.HandleFunc("/users", userHandler.GetUsers).Methods("GET")
-	r.HandleFunc("user/add", userHandler.CreateUser).Methods("POST")
+	r.HandleFunc("/user/add", userHandler.CreateUser).Methods("POST")
 	return r
 }
